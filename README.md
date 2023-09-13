@@ -2,4 +2,4 @@
 A Collaborative Augmented Reality Android application for Floor Planning
 main branch
 > [!NOTE]
-> main branch - the branch for final CoPlan AR source code
+> Muhammad0431's sample/testing/dev/feature code
