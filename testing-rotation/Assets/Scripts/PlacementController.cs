@@ -14,9 +14,12 @@ public class PlacementController : MonoBehaviour
 
     private ARRaycastManager arRaycastManager;
 
-    static List<ARRaycastHit> hits = new List<ARRaycastHit>();
+    private static List<ARRaycastHit> hits = new List<ARRaycastHit>();
 
     private List<GameObject> addedPrefabs = new List<GameObject>();
+
+    private Vector2 touchPosition = default;
+
     public GameObject PlacedPrefab {
 
         get { 
@@ -35,32 +38,44 @@ public class PlacementController : MonoBehaviour
         arRaycastManager = GetComponent<ARRaycastManager>();
     }
 
-    bool TryGetTouchPosition(out Vector2 touchPosition) {
-
-        if (Input.touchCount > 0) {
-
-            touchPosition = Input.GetTouch(0).position;
-            return true;
-        }
-
-        touchPosition = default;
-
-        return false;
-    }
-
     void Update() {
 
-        if (!TryGetTouchPosition(out Vector2 touchPosition)) {
+        if (Input.touchCount > 0) { 
+        
+            Touch touch = Input.GetTouch(0);
 
-            return;
-        }
+            if (touch.phase == TouchPhase.Began) {
 
-        if (arRaycastManager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon)) {
+                touchPosition = touch.position;
 
-            var hitPose = hits[0].pose;
+                if (arRaycastManager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon)) {
 
-            GameObject addedPrefab = Instantiate(placedPrefab, hitPose.position, hitPose.rotation);
-            addedPrefabs.Add(addedPrefab);
+                    var hitPose = hits[0].pose;
+
+                    if (addedPrefabs.Count < 2) {
+
+                        GameObject addedPrefab = Instantiate(placedPrefab, hitPose.position, hitPose.rotation);
+                        addedPrefabs.Add(addedPrefab);
+                    }
+                }
+            }
+
+            if (touch.phase == TouchPhase.Moved) {
+
+                touchPosition = touch.position;
+
+                if (arRaycastManager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon)) {
+
+                    var hitPose = hits[0].pose;
+
+                    if (addedPrefabs.Count > 0) {
+
+                        GameObject lastAddedPrefab = addedPrefabs[addedPrefabs.Count - 1];
+                        lastAddedPrefab.transform.position = hitPose.position;
+                        lastAddedPrefab.transform.rotation = hitPose.rotation;
+                    }
+                }
+            }
         }
     }
 }
