@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.XR.ARFoundation;
 
 //automatically adds ray cast manager when script is added to a game object
@@ -20,6 +21,9 @@ public class PlacementController : MonoBehaviour
 
     private Vector2 touchPosition = default;
 
+    [SerializeField]
+    private Button rotateButton;
+
     public GameObject PlacedPrefab {
 
         get { 
@@ -36,6 +40,13 @@ public class PlacementController : MonoBehaviour
     void Awake() {
 
         arRaycastManager = GetComponent<ARRaycastManager>();
+        rotateButton.onClick.AddListener(RotatePrefab);
+    }
+
+    private void RotatePrefab() {
+
+        GameObject lastAddedPrefab = addedPrefabs[addedPrefabs.Count - 1];
+        lastAddedPrefab.transform.Rotate(0, 10, 0);
     }
 
     void Update() {
