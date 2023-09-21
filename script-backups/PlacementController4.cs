@@ -29,68 +29,57 @@ public class PlacementController : MonoBehaviour
 
     private PlacedPrefab lastSelectedPrefab;
 
-    private List<GameObject> addedPrefabs = new List<GameObject>();
+    private List<GameObject> addedPrefabs = new List<GameObject>(); 
 
-    public GameObject PlacementModel
-    {
+    public GameObject PlacementModel {
 
-        get
-        {
+        get { 
 
             return placementModel;
         }
 
-        set
-        {
+        set {
 
             placementModel = value;
         }
     }
 
-    void Awake()
-    {
+    void Awake() {
 
         arRaycastManager = GetComponent<ARRaycastManager>();
         rotateButton.onClick.AddListener(RotatePrefab);
     }
 
-    private void RotatePrefab()
-    {
+    private void RotatePrefab() {
 
         Debug.Log("HELLO");
         //GameObject lastAddedPrefab = addedPrefabs[addedPrefabs.Count - 1];
         //lastAddedPrefab.transform.Rotate(0, 10, 0);
     }
 
-    void Update()
-    {
+    void Update() {
 
-        if (Input.touchCount > 0)
-        {
-
+        if (Input.touchCount > 0) { 
+        
             Touch touch = Input.GetTouch(0);
-
+            
             touchPosition = touch.position;
 
-            if (touch.phase == TouchPhase.Began)
-            {
+            if (touch.phase == TouchPhase.Began) {
 
                 Ray ray = arCamera.ScreenPointToRay(touchPosition);
 
                 RaycastHit hitObject;
 
-                if (Physics.Raycast(ray, out hitObject))
-                {
-
+                if (Physics.Raycast(ray, out hitObject)) { 
+                    
                     lastSelectedPrefab = hitObject.transform.GetComponent<PlacedPrefab>();
 
-                    if (lastSelectedPrefab != null)
-                    {
+                    if (lastSelectedPrefab != null) {
 
                         PlacedPrefab[] allPlacedPrefabs = FindObjectsOfType<PlacedPrefab>();
 
-                        foreach (PlacedPrefab placedPref in allPlacedPrefabs)
-                        {
+                        foreach (PlacedPrefab placedPref in allPlacedPrefabs) {
 
                             if (placedPref != lastSelectedPrefab)
                             {
@@ -98,10 +87,9 @@ public class PlacementController : MonoBehaviour
                                 placedPref.Selected = false;
                             }
 
-                            else
-                            {
+                            else {
 
-                                placedPref.Selected = true;
+                                placedPref.Selected = true; 
                             }
                         }
                     }
@@ -109,26 +97,22 @@ public class PlacementController : MonoBehaviour
 
             }
 
-            if (touch.phase == TouchPhase.Ended)
-            {
+            if (touch.phase == TouchPhase.Ended) {
 
                 lastSelectedPrefab.Selected = false;
             }
         }
 
-        if (arRaycastManager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon))
-        {
+        if (arRaycastManager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon)) {
 
             Pose hitPose = hits[0].pose;
 
-            if (lastSelectedPrefab == null)
-            {
+            if (lastSelectedPrefab == null) {
 
                 lastSelectedPrefab = Instantiate(placementModel, hitPose.position, hitPose.rotation).GetComponent<PlacedPrefab>();
             }
 
-            else if (lastSelectedPrefab.Selected)
-            {
+            else if (lastSelectedPrefab.Selected) {
 
                 lastSelectedPrefab.transform.position = hitPose.position;
                 lastSelectedPrefab.transform.rotation = hitPose.rotation;

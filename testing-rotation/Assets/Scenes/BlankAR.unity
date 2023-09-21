@@ -259,10 +259,10 @@ RectTransform:
   m_Father: {fileID: 110065355}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.31875002, y: 0.03645132}
-  m_AnchorMax: {x: 0.6762499, y: 0.075219475}
-  m_AnchoredPosition: {x: 2, y: 1.5}
-  m_SizeDelta: {x: -96, y: -20}
+  m_AnchorMin: {x: 0, y: 0.03645132}
+  m_AnchorMax: {x: 1, y: 0.075219475}
+  m_AnchoredPosition: {x: 0, y: 1.5}
+  m_SizeDelta: {x: -610, y: -20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &166887896
 MonoBehaviour:
@@ -790,8 +790,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f893536412b727d4491eaf5ef9e7d5a0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  placedPrefab: {fileID: 8265016410663787376, guid: 89ea1d145ba1ad944b0c46f286eb6e75,
+  placementModel: {fileID: 8265016410663787376, guid: 89ea1d145ba1ad944b0c46f286eb6e75,
     type: 3}
+  arCamera: {fileID: 1354141926}
   rotateButton: {fileID: 166887896}
 --- !u!114 &1659859602
 MonoBehaviour:
