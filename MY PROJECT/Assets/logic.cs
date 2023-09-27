@@ -8,6 +8,7 @@ public class logic : MonoBehaviour
 {
     private ARRaycastManager raycastmanager;
     private GameObject obj;
+    private Touch touch;
 
     // Start is called before the first frame update
     void Start()
@@ -23,6 +24,7 @@ public class logic : MonoBehaviour
     {
         List<ARRaycastHit> hits = new List<ARRaycastHit>();
         raycastmanager.Raycast(new Vector2(Screen.width / 2, Screen.height / 2), hits, TrackableType.Planes);
+
 
         if (hits.Count > 0)
         {
