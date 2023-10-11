@@ -1,4 +1,6 @@
 # CoPlan AR
 A Collaborative Augmented Reality Android application for Floor Planning
+=======
+main branch
 > [!NOTE]
-> ramish777's sample/testing/dev/feature code
+> main branch - the branch for final CoPlan AR source code
