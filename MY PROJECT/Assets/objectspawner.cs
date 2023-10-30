@@ -20,20 +20,6 @@ public class objectspawner : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-
-        //if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Began)
-        //{ 
-        //    // Ensure that a prefab is assigned to this variable
-        //    if (objTospawn != null)
-        //    {
-        //        Instantiate(objTospawn, placementIndicator.transform.position, placementIndicator.transform.rotation);
-        //    }
-        //}
-    }
     public void SetObjectToSpawn(GameObject objectToSpawn)
     {
         

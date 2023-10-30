@@ -17,15 +17,16 @@ public class BtnManager : MonoBehaviour
     public GameObject wallPrefab;
     public GameObject tablePrefab;
 
-    public List<GameObject> addedPrefabs = new List<GameObject>();
+    private List<GameObject> addedPrefabs = new List<GameObject>();
 
-    public logic placementIndicator;
+    private logic placementIndicator;
 
     int selectedIndex = -1;
-    public Button chairButton;
-    public Button tableButton;
-    public Button wallButton;
-    public Button doneButton;
+    private Button chairButton;
+    private Button tableButton;
+    private Button wallButton;
+    private Button doneButton;
+    private Button deleteButton;
 
 
     private ARRaycastManager raycastmanager;
@@ -55,6 +56,7 @@ public class BtnManager : MonoBehaviour
         chairButton = GameObject.Find("chair").GetComponent<Button>();
         tableButton = GameObject.Find("table").GetComponent<Button>();
         wallButton = GameObject.Find("wall").GetComponent<Button>();
+        deleteButton = GameObject.Find("Delete").GetComponent<Button>();
 
         Debug.Log("chairButton: "+ chairButton.name);
         Debug.Log("wallButton: " + tableButton.name);
@@ -71,6 +73,7 @@ public class BtnManager : MonoBehaviour
         tableButton.onClick.AddListener(SpawnTable);
         wallButton.onClick.AddListener(SpawnWall);
         doneButton.onClick.AddListener(DeselectObject);
+        deleteButton.onClick.AddListener(DeleteObject);
 
         DisableButtons();
     }
@@ -117,52 +120,12 @@ public class BtnManager : MonoBehaviour
                             break;
                         }
                     }
-
-                    if (selectedIndex != -1)
-                    {
-                        EnableButtons();
-
-                        meshRenderer = selected.GetComponent<MeshRenderer>();
-
-                        if (meshRenderer == null)
-                        {
-                            Debug.LogError("Mesh Renderer not found on the selected game object!");
-                            return;
-                        }
-                        else
-                        {
-                            // Store the previously selected material.
-                            previouslySelected = selected;
-                            previouslySelectedMaterial = originalMaterial;
-
-                            Debug.Log("Previous material of object to remember : " + originalMaterial);
-                            selected.GetComponent<MeshRenderer>().material = boundingMaterial;
-                            Debug.Log("selected object material after: " + selected.GetComponent<MeshRenderer>().material);
-                        }
-
-                        move_freely = true;
-                    }
+                    ObjectHighlighting();
                 } 
 
             }
+            movement();
 
-            if(doneButton.interactable == true)
-            {
-                if (selected != null && move_freely == true)
-                {
-                    // Object movement
-                    if (Input.GetTouch(0).phase == TouchPhase.Moved)
-                    {
-                        touchPosition = Input.GetTouch(0).position;
-
-                        if (raycastmanager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon))
-                        {
-                            var hitPose = hits[0].pose;
-                            selected.transform.position = hitPose.position;
-                        }
-                    }
-                }
-            } 
         }
 
         Rotation();
@@ -171,11 +134,13 @@ public class BtnManager : MonoBehaviour
     public void EnableButtons()
     {
         doneButton.interactable = true;
+        deleteButton.interactable = true;
     }
 
     public void DisableButtons()
     {
         doneButton.interactable = false;
+        deleteButton.interactable = false;
     }
 
     private void DeselectObject()
@@ -227,7 +192,7 @@ public class BtnManager : MonoBehaviour
                             float deltaRotation = currentRotationAngle - initialRotationAngle;
 
                             // Apply the rotation to the target object (around the Y-axis)
-                            selected.transform.Rotate(Vector3.up, deltaRotation);
+                            selected.transform.Rotate(Vector3.up, deltaRotation, Space.World);
 
                             // Update initial rotation angle for the next frame
                             initialRotationAngle = currentRotationAngle;
@@ -300,6 +265,93 @@ public class BtnManager : MonoBehaviour
         GameObject newChair = Instantiate(wallPrefab, placementIndicator.transform.position, placementIndicator.transform.rotation);
         addedPrefabs.Add(newChair);
         Debug.Log("Number of objects in the list: " + addedPrefabs.Count);
+    }
+
+    private void movement()
+    {
+        if (doneButton.interactable == true)
+        {
+            if (selected != null && move_freely == true)
+            {
+                // Object movement
+                if (Input.GetTouch(0).phase == TouchPhase.Moved)
+                {
+                    touchPosition = Input.GetTouch(0).position;
+
+                    if (raycastmanager.Raycast(touchPosition, hits, UnityEngine.XR.ARSubsystems.TrackableType.PlaneWithinPolygon))
+                    {
+                        var hitPose = hits[0].pose;
+                        selected.transform.position = hitPose.position;
+                    }
+                }
+            }
+        }
+    }
+
+    private void ObjectHighlighting()
+    {
+        if (selectedIndex != -1)
+        {
+            EnableButtons();
+
+            meshRenderer = selected.GetComponent<MeshRenderer>();
+
+            if (meshRenderer == null)
+            {
+                Debug.LogError("Mesh Renderer not found on the selected game object!");
+                return;
+            }
+            else
+            {
+                // Store the previously selected material.
+                previouslySelected = selected;
+                previouslySelectedMaterial = originalMaterial;
+
+                Debug.Log("Previous material of object to remember : " + originalMaterial);
+                selected.GetComponent<MeshRenderer>().material = boundingMaterial;
+                Debug.Log("selected object material after: " + selected.GetComponent<MeshRenderer>().material);
+            }
+
+            move_freely = true;
+        }
+    }
+
+    public void DeleteObject()
+    {
+        if (doneButton.interactable == true)
+        {
+            if (selected != null && selectedIndex != -1)
+            {
+                // Remove the selected object from the array
+                addedPrefabs.RemoveAt(selectedIndex);
+
+                // Destroy the selected object
+                Destroy(selected);
+
+                // Deselect the object and disable the buttons
+                selected = null;
+                selectedIndex = -1;
+                move_freely = false;
+
+                // Reset the meshRenderer and materials
+                meshRenderer = null;
+                previouslySelectedMaterial = null;
+
+                // Remove any null elements from the array
+                addedPrefabs.RemoveAll(item => item == null);
+
+                for (int i = 0; i < addedPrefabs.Count; i++)
+                {
+                    if (addedPrefabs[i] != null)
+                    {
+                        Debug.Log("Added Prefab at index " + i + ": " + addedPrefabs[i].name);
+                    }
+                }
+
+                // Disable the buttons
+                DisableButtons();
+            }
+        }
     }
 
 }

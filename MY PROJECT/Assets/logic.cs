@@ -8,8 +8,6 @@ public class logic : MonoBehaviour
 {
     private ARRaycastManager raycastmanager;
     private GameObject obj;
-    private Touch touch;
-
     // Start is called before the first frame update
     void Start()
     {
