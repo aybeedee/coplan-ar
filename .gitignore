@@ -8,6 +8,16 @@
 Assets/AssetStoreTools*
 Packages/packages-lock.json
 
+# Jetbrain Rider Cache
+.idea/
+
+# Asset meta data should only be ignored when the corresponding asset is also ignored
+!/[Aa]ssets/**/*.meta
+
+/[Aa]ssets/AssetStoreTools*
+
+/[Aa]ssets/ARDK/Plugins/unity_exports
+
 # MemoryCaptures can get excessive in size.
 # They also could contain extremely sensitive data
 /[Mm]emoryCaptures/
@@ -62,6 +72,15 @@ sysinfo.txt
 *.aab
 *.unitypackage
 *.app
+*.a
+*.aar
+/Packages/ardk-upm*.tgz
+/Packages/ardk-upm*.tgz.meta
+/Packages/sharedar-upm*.tgz
+/Packages/sharedar-upm*.tgz.meta
+
+# Exception to *.aar for Lunar Console plugin
+!Assets/LunarConsole/Editor/Android/lunar-console.aar
 
 # Crashlytics generated file
 crashlytics-build.properties
@@ -74,6 +93,7 @@ crashlytics-build.properties
 /[Aa]ssets/[Ss]treamingAssets/aa/*
 
 .DS_Store
+/[Aa]ssets/google-services.json
 
 #mine
 *.zip

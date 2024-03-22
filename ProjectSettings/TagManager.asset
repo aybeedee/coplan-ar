@@ -3,19 +3,23 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - chairObject
+  - tableObject
+  - wallObject
+  - Cube
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - MeshLayer
   - Water
   - UI
   - 
   - 
   - 
   - 
-  - 
+  - ignorable
   - 
   - 
   - 
