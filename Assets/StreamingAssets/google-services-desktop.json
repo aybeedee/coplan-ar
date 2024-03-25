@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "832682388687",
+    "firebase_url": "https://co-plan-ar-iteration-3-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "co-plan-ar-iteration-3",
+    "storage_bucket": "co-plan-ar-iteration-3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:832682388687:android:d8b7d769f0f53530ef5bba",
+        "android_client_info": {
+          "package_name": "com.nianticlabs.ar.ardksamples"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWXW_1EShssanY7w7v862-vuUuxZKnzGY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

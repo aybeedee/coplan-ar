@@ -125,6 +125,8 @@ namespace Niantic.Lightship.AR.Samples
 
         private logic placementIndicator;
 
+        private string clientSelectedObject = "server";
+
         void Awake()
         {
             Instance = this;
@@ -237,11 +239,11 @@ namespace Niantic.Lightship.AR.Samples
 
                             if (IsServer)
                             {
-                                PlaceObjectServer(hit.point);
+                                PlaceObjectServer(hit.point, clientSelectedObject);
                             }
                             else
                             {
-                                PlaceObjectServerRpc(hit.point);
+                                PlaceObjectServerRpc(hit.point, clientSelectedObject);
                             }
                             //GameObject placedObject = Instantiate(NetworkManager.Singleton.GetNetworkPrefabOverride(_placementObject), hit.point, Quaternion.identity);
 
@@ -522,6 +524,7 @@ namespace Niantic.Lightship.AR.Samples
         private void SwitchToChair()
         {
             Debug.Log("Chair Button clicked");
+            clientSelectedObject = "chair";
             _placementObject = _chairPrefab;
             //// Vector3 position = new Vector3((-1f * placementIndicator.transform.position.x), placementIndicator.transform.position.y, (-1 * placementIndicator.transform.position.z));
             //GameObject placedObject = Instantiate(_placementObject, placementIndicator.transform.position, placementIndicator.transform.rotation);
@@ -536,6 +539,7 @@ namespace Niantic.Lightship.AR.Samples
         private void SwitchToWall()
         {
             Debug.Log("Wall Button clicked");
+            clientSelectedObject = "wall";
             _placementObject = _wallPrefab;
 
             //GameObject localObject = Instantiate(_cube1, new Vector3(-4f, 0f, 1f), Quaternion.identity);
@@ -544,6 +548,7 @@ namespace Niantic.Lightship.AR.Samples
         private void SwitchToTable()
         {
             Debug.Log("Table Button clicked");
+            clientSelectedObject = "table";
             _placementObject = _tablePrefab;
 
             //GameObject networkObject = Instantiate(_cube2, new Vector3(-4f, 0f, 1f), Quaternion.identity);
@@ -603,12 +608,36 @@ namespace Niantic.Lightship.AR.Samples
             }
         }
 
-        private void PlaceObjectServer(Vector3 hitPoint)
+        private void PlaceObjectServer(Vector3 hitPoint, string objectType, ulong clientId = 0)
         {
-            GameObject placedObject = Instantiate(NetworkManager.Singleton.GetNetworkPrefabOverride(_placementObject), hitPoint, Quaternion.identity);
+            GameObject placedObject = null;
+            if (objectType == "server")
+            {
+                placedObject = Instantiate(NetworkManager.Singleton.GetNetworkPrefabOverride(_placementObject), hitPoint, Quaternion.identity);
+            }
+            else if (objectType == "chair")
+            {
+                placedObject = Instantiate(NetworkManager.Singleton.GetNetworkPrefabOverride(_chairPrefab), hitPoint, Quaternion.identity);
+            }
+            else if (objectType == "table")
+            {
+                placedObject = Instantiate(NetworkManager.Singleton.GetNetworkPrefabOverride(_tablePrefab), hitPoint, Quaternion.identity);
+            }
+            else if (objectType == "wall")
+            {
+                placedObject = Instantiate(NetworkManager.Singleton.GetNetworkPrefabOverride(_wallPrefab), hitPoint, Quaternion.identity);
+            }
             Debug.Log(" - - - PLACED OBJECT  - - - | X: " + placedObject.transform.position.x + " Y: " + placedObject.transform.position.y + " Z: " + placedObject.transform.position.z);
             NetworkObject placedNetworkObject = placedObject.GetComponent<NetworkObject>();
-            placedNetworkObject.Spawn();
+
+            if (objectType == "server")
+            {
+                placedNetworkObject.Spawn();
+            }
+            else
+            {
+                placedNetworkObject.SpawnWithOwnership(clientId);
+            }
             addedPrefabs.Add(placedObject);
             Debug.Log("placedObject Instance ID: " + placedObject.GetInstanceID());
             Debug.Log("list item Instance ID: " + addedPrefabs.Last<GameObject>().GetInstanceID());
@@ -616,11 +645,11 @@ namespace Niantic.Lightship.AR.Samples
         }
 
         [ServerRpc(RequireOwnership = false)]
-        private void PlaceObjectServerRpc(Vector3 hitpoint, ServerRpcParams serverRpcParams = default)
+        private void PlaceObjectServerRpc(Vector3 hitpoint, string objectType, ServerRpcParams serverRpcParams = default)
         {
             Debug.Log("serverrpc params client id in serverrpc: " + serverRpcParams.Receive.SenderClientId);
             Debug.Log("hit poiunt in serverrpc: " + hitpoint);
-            PlaceObjectServer(hitpoint);
+            PlaceObjectServer(hitpoint, objectType, serverRpcParams.Receive.SenderClientId);
         }
     }
 }
